@@ -2,7 +2,7 @@
 
 Reproducible of issues with `nogo`.
 
-Verify the project is working with `bazel run //:repro`.
+Verify the project is working with `bazel run //:repro`. Use `git reset --hard` to return to the current state.
 
 ## Issue Reprodution
 
