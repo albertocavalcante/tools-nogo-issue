@@ -27,7 +27,7 @@ bazel run //:repro
 
 ## Workarounds
 
-For issue 2:
+### Issue 2
 
 1. Flip back the experimental isolated extension:
 
@@ -35,7 +35,13 @@ For issue 2:
 sed -i '' 's/--experimental_isolated_extension_usages/--noexperimental_isolated_extension_usages/' .bazelrc
 ```
 
-2: Add `golang.org/x/tools` as part of a manual entry to `go_deps.module`
+2. Remove `nogo_deps` isolated extension:
+
+```sh
+sed -i '' '/nogo_deps = use_extension/,/use_repo(nogo_deps, "org_golang_x_tools")/d' MODULE.bazel
+```
+
+3. Add `golang.org/x/tools` as part of a manual entry to `go_deps.module`
 
 ```sh
 sed -i '' '/use_repo/i\
@@ -47,22 +53,23 @@ go_deps.module(\
 ' MODULE.bazel
 ```
 
-3. Update `use_repo` with `buildozer` (`bazel mod tidy` should also work)
+4. Update `use_repo` with `buildozer` (`bazel mod tidy` should also work)
 
 ```sh
 buildozer 'use_repo_add go_deps org_golang_x_tools' //MODULE.bazel:all
 ```
 
-4. Optional but why not, we can nuke `tools/nogo`
+5. Optional but why not, we can nuke `tools/nogo`
 
 ```sh
 rm -rf tools/nogo
 ```
 
-5. Add an analyzer from `golang.org/x/tools` and confirm it works:
+6. Add an analyzer from `golang.org/x/tools` and remove `vet`:
 
 ```sh
 buildozer 'set deps @org_golang_x_tools//go/analysis/passes/fieldalignment' //:main_nogo
 buildozer 'remove vet' //:main_nogo
-bazel run //:repro
 ```
+
+7. Confirm it works: `bazel run //:repro`
