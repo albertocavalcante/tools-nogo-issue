@@ -1,0 +1,2 @@
+# https://github.com/bazel-contrib/rules_go/blob/v0.53.0/docs/go/core/bzlmod.md#depending-on-tools
+common --experimental_isolated_extension_usages
